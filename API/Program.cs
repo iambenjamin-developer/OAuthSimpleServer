@@ -1,3 +1,4 @@
+using Duende.IdentityServer.Models;
 
 namespace API
 {
@@ -8,6 +9,22 @@ namespace API
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            // Add IdentityServer
+            builder.Services.AddIdentityServer()
+                    .AddInMemoryApiScopes(new[]
+                    {
+                        new ApiScope("api1", "My API")
+                    })
+                    .AddInMemoryClients(new[]
+                    {
+                        new Client
+                        {
+                            ClientId = "client",
+                            AllowedGrantTypes = GrantTypes.ClientCredentials,
+                            ClientSecrets = { new Secret("secret".Sha256()) },
+                            AllowedScopes = { "api1" }
+                        }
+                    });
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
